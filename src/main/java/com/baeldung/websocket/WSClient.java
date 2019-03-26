@@ -1,6 +1,8 @@
 package com.baeldung.websocket;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
@@ -13,12 +15,16 @@ import javax.websocket.WebSocketContainer;
 
 @ClientEndpoint
 public class WSClient {
+
 	private static Object waitLock = new Object();
+	private List<String> messages = new ArrayList<>();
 
 	@OnMessage
 	public void onMessage(String message) {
 		// the new USD rate arrives from the websocket server side.
-		System.out.println("Received msg: " + message);
+		String log = message.concat(" Client timestamp: " + System.currentTimeMillis());
+		messages.add(log);
+		// System.out.println("Server: " + message + " Client timestamp: " + System.currentTimeMillis());
 	}
 
 	@OnError
@@ -28,7 +34,12 @@ public class WSClient {
 
 	@OnClose
 	public void onClose(Session websocket, CloseReason reason) {
-		System.out.println("close");
+		System.out.println("CCClosed. " + websocket.getId());
+		StringBuilder sb = new StringBuilder();
+		for (String message : messages) {
+			sb.append(message).append("\n");
+		}
+		System.out.println(sb.toString());
 	}
 
 	private static void wait4TerminateSignal() {
@@ -36,12 +47,38 @@ public class WSClient {
 			try {
 				waitLock.wait();
 			} catch (InterruptedException e) {
+
+			}
+		}
+	}
+
+	public void startSession(String user) {
+		System.out.println("Start session: " + user);
+		messages.clear();
+		WebSocketContainer container = null;
+		Session session = null;
+		try {
+			// Tyrus is plugged via ServiceLoader API. See notes above
+			container = ContainerProvider.getWebSocketContainer();
+			// WS1 is the context-root of my web.app
+			// ratesrv is the path given in the ServerEndPoint annotation on server implementation
+			session = container.connectToServer(WSClient.class, URI.create("ws://localhost:8080/java-websocket/chat/" + user));
+			wait4TerminateSignal();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (session != null) {
+				try {
+					session.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 
 	public static void main(String[] args) {
-		WebSocketContainer container = null;//
+		WebSocketContainer container = null;
 		Session session = null;
 		try {
 			// Tyrus is plugged via ServiceLoader API. See notes above
@@ -62,4 +99,5 @@ public class WSClient {
 			}
 		}
 	}
+
 }
