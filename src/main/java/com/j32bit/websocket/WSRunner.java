@@ -1,4 +1,4 @@
-package com.baeldung.websocket;
+package com.j32bit.websocket;
 
 public class WSRunner implements Runnable {
 	private Thread t;

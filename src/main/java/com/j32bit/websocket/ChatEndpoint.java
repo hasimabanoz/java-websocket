@@ -1,4 +1,4 @@
-package com.baeldung.websocket;
+package com.j32bit.websocket;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -14,7 +14,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
-import com.baeldung.model.Message;
+import com.j32bit.model.Message;
 
 @ServerEndpoint(value = "/chat/{username}", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
 public class ChatEndpoint {
@@ -30,7 +30,7 @@ public class ChatEndpoint {
 		users.put(session.getId(), username);
 		System.out.println("ID:" + session.getId() + " - User:" + username + " connected.");
 
-		if (chatEndpoints.size() > 2) {
+		if (chatEndpoints.size() > 9) {
 			broadcastTimeStamp(session.getId(), 10);
 		}
 	}

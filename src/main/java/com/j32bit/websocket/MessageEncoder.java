@@ -1,11 +1,11 @@
-package com.baeldung.websocket;
+package com.j32bit.websocket;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-import com.baeldung.model.Message;
 import com.google.gson.Gson;
+import com.j32bit.model.Message;
 
 public class MessageEncoder implements Encoder.Text<Message> {
 

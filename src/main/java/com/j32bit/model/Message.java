@@ -1,4 +1,4 @@
-package com.baeldung.model;
+package com.j32bit.model;
 
 public class Message {
 	private String from;

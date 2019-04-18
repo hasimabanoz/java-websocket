@@ -1,4 +1,4 @@
-package com.baeldung.websocket;
+package com.j32bit.websocket;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -12,6 +12,8 @@ import javax.websocket.OnError;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
+
+import com.j32bit.util.Constants;
 
 @ClientEndpoint
 public class WSClient {
@@ -34,7 +36,7 @@ public class WSClient {
 
 	@OnClose
 	public void onClose(Session websocket, CloseReason reason) {
-		System.out.println("CCClosed. " + websocket.getId());
+		System.out.println("Closed. " + websocket.getId());
 		StringBuilder sb = new StringBuilder();
 		for (String message : messages) {
 			sb.append(message).append("\n");
@@ -62,7 +64,7 @@ public class WSClient {
 			container = ContainerProvider.getWebSocketContainer();
 			// WS1 is the context-root of my web.app
 			// ratesrv is the path given in the ServerEndPoint annotation on server implementation
-			session = container.connectToServer(WSClient.class, URI.create("ws://localhost:8080/java-websocket/chat/" + user));
+			session = container.connectToServer(WSClient.class, URI.create(Constants.WS_ENDPOINT_BASE + user));
 			wait4TerminateSignal();
 		} catch (Exception e) {
 			e.printStackTrace();
